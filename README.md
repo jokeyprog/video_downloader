@@ -17,6 +17,9 @@
 - The link is not inserted in the input field
 > You probably have the Russian keyboard layout enabled, switch to English.
 
+- When downloading from YouTube, ask for *ffmpeg*
+> We know about this and are looking for ways to make friends with *yt_dlp* and *ffmpeg*.
+
 - The video does not download
 > The video is either closed to outsiders or has a format\source not supported by non-dlp
 
