@@ -15,6 +15,7 @@ class App(ttk.Frame):
             self.columnconfigure(index=index, weight=1)
             self.rowconfigure(index=index, weight=1)
         self.setup_widgets()
+        self.checkUpdate(method="Start")
 
     def setup_widgets(self):
         self.widgets_frame = ttk.Frame(self, padding=(0, 10, 0, 0))
@@ -73,20 +74,28 @@ class App(ttk.Frame):
 
     def checkUpdate(self, method='Button'):
         try:
+            logging.info("Search for updates")
             response = requests.get("https://api.github.com/repos/jokeyprog/video_downloader/releases/latest")
             latest_version = response.json()["tag_name"]
             if float(latest_version) > float(currentVersion):
+                logging.info(f"Update found")
                 self.updateApp(latest_version)
             else:
+                logging.info(f"No updates found. Version {latest_version} is the latest")
                 if method == 'Button':
                     messagebox.showinfo(title='Обновления не найдены', message=f'Обновления не найдены.\nТекущая версия: {latest_version}')
-        except requests.exceptions.ConnectionError:
+        except requests.exceptions.ConnectionError as e:
             if method == 'Button':
+                logging.error("No network access")
+                logging.critical(e)
                 messagebox.showwarning(title='Нет доступа к сети', message='Нет доступа к сети.\nПроверьте подключение к интернету.')
             elif method == 'ConnectionError':
+                logging.error("Connection error")
+                logging.critical(e)
                 pass
         except Exception as e:
-                print(f"An error occurred: {e}")
+            logging.critical(e)
+            print(f"An error occurred: {e}")
 
     def updateApp(self, version):
         update = messagebox.askyesno(title='Найдено обновление', message=f'Доступна новая версия {version} . Обновимся?')
