@@ -104,12 +104,16 @@ class App(ttk.Frame):
 
     def change_theme(self):
         # NOTE: The theme's real name is azure-<mode>
-        if root.tk.call("ttk::style", "theme", "use") == "azure-dark":
-            # Set light theme
-            root.tk.call("set_theme", "light")
-        else:
-            # Set dark theme
-            root.tk.call("set_theme", "dark")
+        try:
+            if root.tk.call("ttk::style", "theme", "use") == "azure-dark":
+                # Set light theme
+                root.tk.call("set_theme", "light")
+            else:
+                # Set dark theme
+                root.tk.call("set_theme", "dark")
+        except Exception as e:
+            self.status_label.configure(text="Не найдена папка с темами")
+            logging.error(e)
 
     def get_directory_string(self):
         if self.entry_nm.get() == '':
