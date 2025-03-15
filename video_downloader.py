@@ -4,6 +4,7 @@ from tkinter import PhotoImage
 import webbrowser
 from tkinter import ttk, messagebox
 import yt_dlp
+import requests
 import logging
 
 currentVersion = '1.0'
@@ -30,7 +31,7 @@ class App(ttk.Frame):
         )
         self.label.grid(row=0, column=0,padx=0, pady=25, sticky="n")
 
-        self.entry_nm = ttk.Entry(self.widgets_frame, font="Calibri 22")
+        self.entry_nm = ttk.Entry(self.widgets_frame, font=("Calibri 22"))
         self.entry_nm.insert(tk.END, str(''))
         self.entry_nm.grid(row=1, column=0, columnspan=10, padx=(5, 5), ipadx=150, ipady=5, pady=(0, 0), sticky="ew")
         self.entry_nm.bind('<Return>', self.on_enter_pressed)
@@ -59,12 +60,38 @@ class App(ttk.Frame):
             self.copy_frame, text="About", style="Url.TButton", command=self.openweb
         )
         self.UrlButton.grid(row=1, column=0, padx=20, pady=0, columnspan=2, sticky="n")
-
+        self.UrlButton = ttk.Button(
+            self.copy_frame, text="Vers.: " +currentVersion+" ", style="Url.TButton", command=self.checkUpdate
+        )
+        self.UrlButton.grid(row=1, column=4, padx=20, pady=0, columnspan=2, sticky="w")
         self.button = ttk.Button(self.copy_frame, text="Change theme!", style="Url.TButton", command=self.change_theme)
         self.button.grid(row=1, column=7, padx=20, pady=0, sticky='n')
 
     def openweb(self):
         webbrowser.open_new_tab('https://github.com/jokeyprog/video_downloader')
+
+
+    def checkUpdate(self, method='Button'):
+        try:
+            response = requests.get("https://api.github.com/repos/jokeyprog/video_downloader/releases/latest")
+            latest_version = response.json()["tag_name"]
+            if float(latest_version) > float(currentVersion):
+                self.updateApp(latest_version)
+            else:
+                if method == 'Button':
+                    messagebox.showinfo(title='Обновления не найдены', message=f'Обновления не найдены.\nТекущая версия: {latest_version}')
+        except requests.exceptions.ConnectionError:
+            if method == 'Button':
+                messagebox.showwarning(title='Нет доступа к сети', message='Нет доступа к сети.\nПроверьте подключение к интернету.')
+            elif method == 'ConnectionError':
+                pass
+        except Exception as e:
+                print(f"An error occurred: {e}")
+
+    def updateApp(self, version):
+        update = messagebox.askyesno(title='Найдено обновление', message=f'Доступна новая версия {version} . Обновимся?')
+        if update:
+            webbrowser.open_new_tab('https://github.com/jokeyprog/video_downloader/releases/latest')
 
     def change_theme(self):
         # NOTE: The theme's real name is azure-<mode>
