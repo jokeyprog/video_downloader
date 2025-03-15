@@ -7,7 +7,7 @@ import yt_dlp
 import requests
 import logging
 
-currentVersion = '1.0'
+currentVersion = '1.1'
 class App(ttk.Frame):
     def __init__(self, parent):
         ttk.Frame.__init__(self)
