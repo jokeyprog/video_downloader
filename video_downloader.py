@@ -15,7 +15,7 @@ class App(ttk.Frame):
             self.columnconfigure(index=index, weight=1)
             self.rowconfigure(index=index, weight=1)
         self.setup_widgets()
-        self.checkUpdate(method="Start")
+        self.check_update(method="Start")
 
     def setup_widgets(self):
         self.widgets_frame = ttk.Frame(self, padding=(0, 10, 0, 0))
@@ -32,7 +32,7 @@ class App(ttk.Frame):
         )
         self.label.grid(row=0, column=0,padx=0, pady=25, sticky="n")
 
-        self.entry_nm = ttk.Entry(self.widgets_frame, font=("Calibri 22"))
+        self.entry_nm = ttk.Entry(self.widgets_frame, font="Calibri 22")
         self.entry_nm.insert(tk.END, str(''))
         self.entry_nm.grid(row=1, column=0, columnspan=10, padx=(5, 5), ipadx=150, ipady=5, pady=(0, 0), sticky="ew")
         self.entry_nm.bind('<Return>', self.on_enter_pressed)
@@ -62,7 +62,7 @@ class App(ttk.Frame):
         )
         self.UrlButton.grid(row=1, column=0, padx=20, pady=0, columnspan=2, sticky="n")
         self.UrlButton = ttk.Button(
-            self.copy_frame, text="Vers.: " +currentVersion+" ", style="Url.TButton", command=self.checkUpdate
+            self.copy_frame, text="Vers.: " +currentVersion+" ", style="Url.TButton", command=self.check_update
         )
         self.UrlButton.grid(row=1, column=4, padx=20, pady=0, columnspan=2, sticky="w")
         self.button = ttk.Button(self.copy_frame, text="Change theme!", style="Url.TButton", command=self.change_theme)
@@ -72,14 +72,14 @@ class App(ttk.Frame):
         webbrowser.open_new_tab('https://github.com/jokeyprog/video_downloader')
 
 
-    def checkUpdate(self, method='Button'):
+    def check_update(self, method='Button'):
         try:
             logging.info("Search for updates")
             response = requests.get("https://api.github.com/repos/jokeyprog/video_downloader/releases/latest")
             latest_version = response.json()["tag_name"]
             if float(latest_version) > float(currentVersion):
                 logging.info(f"Update found")
-                self.updateApp(latest_version)
+                self.update_app(latest_version)
             else:
                 logging.info(f"No updates found. Version {latest_version} is the latest")
                 if method == 'Button':
@@ -97,7 +97,7 @@ class App(ttk.Frame):
             logging.critical(e)
             print(f"An error occurred: {e}")
 
-    def updateApp(self, version):
+    def update_app(self, version):
         update = messagebox.askyesno(title='Найдено обновление', message=f'Доступна новая версия {version} . Обновимся?')
         if update:
             webbrowser.open_new_tab('https://github.com/jokeyprog/video_downloader/releases/latest')
