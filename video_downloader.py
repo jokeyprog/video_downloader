@@ -6,8 +6,9 @@ from tkinter import ttk, messagebox
 import yt_dlp
 import requests
 import logging
+import os
 
-currentVersion = '1.2'
+currentVersion = '1.3'
 class App(ttk.Frame):
     def __init__(self, parent):
         ttk.Frame.__init__(self)
@@ -142,6 +143,8 @@ class App(ttk.Frame):
                 ydl.download([video_url])
                 info = ydl.extract_info(video_url, download=True)
                 self.status_label.configure(text=f"Видео успешно скачано: «{info['title']}»")
+                path = os.path.realpath("downloads/")
+                os.startfile(path)
                 logging.info("Successfully downloaded")
         except Exception as e:
             logging.error(e)
