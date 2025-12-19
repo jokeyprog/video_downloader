@@ -236,7 +236,7 @@ class App(ttk.Frame):
             #     except ValueError:
             #         print('eqwqe')
             #         continue
-            if version and float(version) < float(currentVersion):
+            if version and float(version) > float(currentVersion):
                 update = messagebox.askyesno("Обновление", f"Доступна версия {version}. Обновиться?")
                 if update:
                     webbrowser.open_new_tab('https://github.com/jokeyprog/video_downloader/releases/latest')
