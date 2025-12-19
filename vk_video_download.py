@@ -61,7 +61,7 @@ class App(ttk.Frame):
         )
         self.label.grid(row=0, column=0, padx=0, pady=15, sticky="n")
 
-        self.entry_nm = ttk.Entry(self.widgets_frame, font=("Calibri 22"))
+        self.entry_nm = ttk.Entry(self.widgets_frame, font="Calibri 22")
         self.entry_nm.insert(tk.END, str(''))
         self.entry_nm.grid(row=1, column=0, columnspan=10, padx=(5, 5), ipadx=150, ipady=5, pady=(0, 0), sticky="ew")
         self.entry_nm.bind('<Return>', self.on_enter_pressed)
@@ -220,30 +220,26 @@ class App(ttk.Frame):
         except Exception as e:
             self.set_status_error(f"Ошибка: {str(e)}")
 
-    # def donate(self):
-    #     try:
-    #         webbrowser.open_new_tab('https://ko-fi.com/monseg')
-    #     except Exception as e:
-    #         self.set_status_error(f"Ошибка: {str(e)}")
-
     def checkUpdate(self, method='Button'):
         try:
             logger.info("Проверка обновлений")
-            github_page = requests.get('https://raw.githubusercontent.com/jokeyprog/video_downloader/main/README.md')
-            github_page_html = str(github_page.content).split()
-            version = None
-            for i in range(0, 9):
-                try:
-                    idx = github_page_html.index(f'1.{i}')
-                    version = github_page_html[idx]
-                    break
-                except ValueError:
-                    continue
-
-            if version and float(version) > float(currentVersion):
+            response = requests.get("https://api.github.com/repos/jokeyprog/video_downloader/releases/latest")
+            version = response.json()["tag_name"]
+            # github_page = requests.get('https://raw.githubusercontent.com/jokeyprog/video_downloader/master/README.md')
+            # github_page_html = str(github_page.content).split()
+            # version = None
+            # for i in range(0, 9):
+            #     try:
+            #         idx = github_page_html.index(f'1.{i}')
+            #         version = github_page_html[idx]
+            #         break
+            #     except ValueError:
+            #         print('eqwqe')
+            #         continue
+            if version and float(version) < float(currentVersion):
                 update = messagebox.askyesno("Обновление", f"Доступна версия {version}. Обновиться?")
                 if update:
-                    webbrowser.open_new_tab('https://github.com/jokeyprog/video_downloader')
+                    webbrowser.open_new_tab('https://github.com/jokeyprog/video_downloader/releases/latest')
             elif method == 'Button':
                 messagebox.showinfo("Обновления", "Нет новых версий")
         except Exception as e:
