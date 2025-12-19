@@ -47,6 +47,7 @@ class App(ttk.Frame):
         self.active_threads = []  # Список активных потоков
 
         self.setup_widgets()
+        self.checkUpdate(method="Start")
 
     def setup_widgets(self):
         self.widgets_frame = ttk.Frame(self, padding=(0, 5, 0, 0))
