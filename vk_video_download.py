@@ -313,16 +313,26 @@ class App(ttk.Frame):
                 filename_base = f"{title}_{timestr}_{random_suffix}"
 
             if use_folder:
-                outtmpl = f'downloads/{filename_base}/video.mp4'
+                outtmpl = f'downloads/{filename_base}/video.mkv'
             else:
-                outtmpl = f'downloads/{filename_base}.mp4'
+                outtmpl = f'downloads/{filename_base}.mkv'
 
             thread_id = f"#{serial_number}"
             self.has_activity = True
 
             ydl_opts = {
+                'format': 'bestvideo+bestaudio/best',
+                'merge_output_format': 'mkv',
+                'ffmpeg_location': './ffmpeg',
+                'postprocessor_args': ['-fflags', '+genpts', '-avoid_negative_ts', 'make_zero'],
+                'postprocessors': [{
+                    'key': 'FFmpegExtractAudio',
+                    'preferredcodec': 'aac',
+                    'preferredquality': '192',
+                }],
+                'keepvideo': True,
                 'outtmpl': outtmpl,
-                'quiet': True,
+                'quiet': False,
                 'progress_hooks': [self.make_progress_hook(thread_id)]
             }
 
