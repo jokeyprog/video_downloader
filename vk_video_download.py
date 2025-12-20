@@ -24,7 +24,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-currentVersion = '1.8'
+currentVersion = '1.9'
 
 def resource_path(relative_path):
     if hasattr(sys, '_MEIPASS'):
