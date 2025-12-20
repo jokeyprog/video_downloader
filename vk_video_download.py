@@ -26,6 +26,11 @@ logger = logging.getLogger(__name__)
 
 currentVersion = '1.8'
 
+def resource_path(relative_path):
+    if hasattr(sys, '_MEIPASS'):
+        return os.path.join(sys._MEIPASS, relative_path)
+    return os.path.join(os.path.abspath('.'), relative_path)
+
 class App(ttk.Frame):
     def __init__(self, parent):
         ttk.Frame.__init__(self)
@@ -93,8 +98,7 @@ class App(ttk.Frame):
             justify="center",
             font=("-size", 10, "-weight", "normal"),
             wraplength=600,
-            anchor="center",
-            foreground="#aaaaaa"
+            anchor="center"
         )
         self.status_label.grid(row=3, column=0, padx=20, pady=(10, 5), sticky="ew")
 
@@ -323,14 +327,18 @@ class App(ttk.Frame):
             ydl_opts = {
                 'format': 'bestvideo+bestaudio/best',
                 'merge_output_format': 'mkv',
-                'ffmpeg_location': './ffmpeg',
+                'ffmpeg_location': resource_path('ffmpeg'),
                 'postprocessor_args': ['-fflags', '+genpts', '-avoid_negative_ts', 'make_zero'],
-                'postprocessors': [{
-                    'key': 'FFmpegExtractAudio',
-                    'preferredcodec': 'aac',
-                    'preferredquality': '192',
-                }],
-                'keepvideo': True,
+                # 'postprocessors': [{
+                #     'key': 'FFmpegVideoConvertor',
+                #     'preferedformat': 'mkv',
+                # }],
+                # 'postprocessors': [{
+                #     'key': 'FFmpegExtractAudio',
+                #     'preferredcodec': 'aac',
+                #     'preferredquality': '192',
+                # }],
+                # 'keepvideo': True,
                 'outtmpl': outtmpl,
                 'quiet': False,
                 'progress_hooks': [self.make_progress_hook(thread_id)]
@@ -383,9 +391,9 @@ class App(ttk.Frame):
 
 if __name__ == "__main__":
     try:
-        if not os.path.exists('theme/vk_theme.tcl'):
+        if not os.path.exists(resource_path('theme/vk_theme.tcl')):
             raise FileNotFoundError("Файл темы не найден: theme/vk_theme.tcl")
-        if not os.path.exists('theme/icon.ico'):
+        if not os.path.exists(resource_path('theme/icon.ico')):
             raise FileNotFoundError("Файл иконки не найден: theme/icon.ico")
 
         root = tk.Tk()
@@ -395,10 +403,10 @@ if __name__ == "__main__":
         root.resizable(False, False)
         root.title("Скачать видео")
         try:
-            icon = PhotoImage(file="theme/icon.png")
+            icon = PhotoImage(file=resource_path("theme/icon.png"))
             root.iconphoto(False, icon)
-            root.iconbitmap("theme/icon.ico")
-            root.tk.call("source", "theme/azure.tcl")
+            root.iconbitmap(resource_path("theme/icon.ico"))
+            root.tk.call("source", resource_path("theme/azure.tcl"))
             root.tk.call("set_theme", "dark")
         except Exception as e:
             logging.error(e)
