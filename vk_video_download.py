@@ -378,8 +378,8 @@ class App(ttk.Frame):
 
     def update_progress_display(self):
         line = " ".join([f"{tid} {pct}" for tid, pct in self.download_progress.items()])
-        color = "#000000" if self.has_activity else "#aaaaaa"
-        root.after(0, lambda: self.status_label.configure(text=line, foreground=color))
+        # color = "#000000" if self.has_activity else "#aaaaaa"
+        root.after(0, lambda: self.status_label.configure(text=line))
 
     def set_status_error(self, msg):
         self.has_activity = True
